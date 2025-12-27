@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Spotify - Kauã e Jamily</title>
+  <style>
+    body { background: #121212; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    
+    .player { background: #181818; padding: 20px; border-radius: 15px; text-align: center; width: 280px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .cover { width: 100%; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .info h2 { font-size: 1.2rem; margin: 15px 0 5px; color: #fff; }
+    .info p { color: #1DB954; font-weight: bold; margin: 0; font-size: 0.9rem; }
+    
+    .play { background: #1DB954; border: none; border-radius: 50%; width: 55px; height: 55px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+    .play:hover { transform: scale(1.1); background: #1ed760; }
+
+    /* Estilo do Contador */
+    .contador-container { margin-top: 25px; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; width: 280px; text-align: center; }
+    .contador-titulo { font-size: 0.8rem; text-transform: uppercase; color: #b3b3b3; letter-spacing: 1px; margin-bottom: 10px; }
+    .timer { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .time-box { display: flex; flex-direction: column; }
+    .time-num { font-size: 1.1rem; font-weight: bold; color: #fff; }
+    .time-lab { font-size: 0.6rem; color: #b3b3b3; text-transform: uppercase; }
+
+    #youtube-video { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="player">
+    <img src="capa.jpeg" alt="Capa" class="cover">
+    <div class="info">
+      <h2>Kauã e Jamily</h2>
+      <p>04/10/2025</p>
+    </div>
+    <div class="controls">
+      <button class="play" onclick="tocarMusica()">
+        <img src="https://cdn-icons-png.flaticon.com/512/0/375.png" style="width: 20px; filter: invert(1);">
+      </button>
+    </div>
+  </div>
+
+  <div class="contador-container">
+    <div class="contador-titulo">Tempo Juntos</div>
+    <div id="contador" class="timer">
+      <div class="time-box"><span id="anos" class="time-num">0</span><span class="time-lab">Anos</span></div>
+      <div class="time-box"><span id="meses" class="time-num">0</span><span class="time-lab">Meses</span></div>
+      <div class="time-box"><span id="dias" class="time-num">0</span><span class="time-lab">Dias</span></div>
+      <div class="time-box"><span id="secs" class="time-num">0</span><span class="time-lab">Segs</span></div>
+    </div>
+  </div>
+
+  <iframe id="youtube-video" width="0" height="0" src="https://www.youtube.com/embed/-dZ212yhIGc?enablejsapi=1" frameborder="0" allow="autoplay"></iframe>
+
+  <script>
+    // Função para tocar a música
+    function tocarMusica() {
+      var iframe = document.getElementById("youtube-video");
+      iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    }
+
+    // Função do Contador
+    const dataInicio = new Date("2025-10-04T00:00:00").getTime();
+
+    function atualizarContador() {
+      const agora = new Date().getTime();
+      let diferenca = Math.abs(agora - dataInicio); // Math.abs para funcionar antes e depois da data
+
+      const segundos = Math.floor((diferenca / 1000) % 60);
+      const minutos = Math.floor((diferenca / 1000 / 60) % 60);
+      const horas = Math.floor((diferenca / (1000 * 60 * 60)) % 24);
+      const diasTotal = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+
+      // Cálculos aproximados de anos e meses
+      const anos = Math.floor(diasTotal / 365);
+      const meses = Math.floor((diasTotal % 365) / 30);
+      const dias = Math.floor((diasTotal % 365) % 30);
+
+      document.getElementById("anos").innerText = anos;
+      document.getElementById("meses").innerText = meses;
+      document.getElementById("dias").innerText = dias;
+      document.getElementById("secs").innerText = segundos;
+    }
+
+    setInterval(atualizarContador, 1000);
+    atualizarContador(); // Inicia imediatamente
+  </script>
+
+</body>
+</html>
